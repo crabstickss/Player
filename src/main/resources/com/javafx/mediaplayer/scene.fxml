@@ -1,49 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ProgressBar?>
-<?import javafx.scene.control.Slider?>
-<?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.text.Font?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import org.kordamp.ikonli.javafx.*?>
 
-<SplitPane dividerPositions="0.7286432160804021" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" orientation="VERTICAL" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.mediaplayer.FXMLController">
-    <items>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="286.0" prefWidth="598.0" style="-fx-background-color: white;">
-            <children>
-                <ListView fx:id="ListView" layoutX="-2.0" layoutY="-1.0" prefHeight="287.0" prefWidth="600.0" style="-fx-background-color: #7f1c9e;" />
-                <Label fx:id="songLabel" alignment="CENTER" prefHeight="26.0" prefWidth="598.0" style="-fx-background-color: #301440;" text="Song #1" textFill="#f2f2f2">
-                    <font>
-                        <Font name="System Bold" size="19.0" />
-                    </font>
-                </Label>
-            </children></AnchorPane>
-        <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="105.0" prefWidth="598.0" style="-fx-background-color: #3e2759;">
-            <children>
-                <Button fx:id="nextButton" layoutX="264.0" layoutY="28.0" mnemonicParsing="false" onAction="#nextMedia" prefHeight="50.0" prefWidth="52.0" style="-fx-background-radius: 100; -fx-background-color: White;" text="&gt;&gt;&gt;" textFill="#1e1d1e">
-                    <font>
-                        <Font name="System Bold" size="12.0" />
-                    </font>
-                </Button>
-                <Button fx:id="pauseButton" layoutX="185.0" layoutY="28.0" mnemonicParsing="false" onAction="#pauseMedia" prefHeight="50.0" prefWidth="52.0" style="-fx-background-radius: 100; -fx-background-color: White;" text="Pause" textFill="#342f39">
-                    <font>
-                        <Font name="System Bold" size="12.0" />
-                    </font>
-                </Button>
-                <Button fx:id="playButton" layoutX="111.0" layoutY="28.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="50.0" prefWidth="52.0" style="-fx-background-radius: 100; -fx-background-color: White;" text="Play">
-                    <font>
-                        <Font name="System Bold" size="12.0" />
-                    </font>
-                </Button>
-                <Button fx:id="previousButton" layoutX="34.0" layoutY="28.0" mnemonicParsing="false" onAction="#previosMedia" prefHeight="50.0" prefWidth="52.0" style="-fx-background-radius: 100; -fx-background-color: White;" text="&lt;&lt;&lt;">
-                    <font>
-                        <Font name="System Bold" size="12.0" />
-                    </font>
-                </Button>
-                <Slider fx:id="volumeSlider" layoutX="411.0" layoutY="46.0" prefHeight="14.0" prefWidth="173.0" value="50.0" />
-                <ProgressBar fx:id="songProgressBar" prefHeight="18.0" prefWidth="598.0" progress="0.0" style="-fx-background-color: white;" />
-            </children></AnchorPane>
-    </items>
-</SplitPane>
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="757.0" style="-fx-background-color: #171414;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.mediaplayer.FXMLController">
+   <children>
+      <AnchorPane layoutY="394.0" prefHeight="86.0" prefWidth="757.0" style="-fx-background-color: #332c54;">
+         <children>
+            <Button fx:id="playButton" layoutX="307.0" layoutY="2.0" minWidth="40.0" mnemonicParsing="false" onAction="#playMedia" prefHeight="38.0" prefWidth="54.0" style="-fx-background-radius: 100; -fx-background-insets: 50;">
+               <graphic>
+                  <FontIcon iconLiteral="gmi-play-circle-outline" iconSize="35" />
+               </graphic></Button>
+            <Button fx:id="nextButton" layoutX="432.0" layoutY="2.0" minWidth="40.0" mnemonicParsing="false" onAction="#nextMedia" prefHeight="38.0" prefWidth="54.0" style="-fx-background-radius: 100; -fx-background-insets: 50;" textFill="#4154a4">
+               <graphic>
+                  <FontIcon iconLiteral="gmi-skip-next" iconSize="35" />
+               </graphic></Button>
+            <Button fx:id="previousButton" layoutX="247.0" layoutY="2.0" minWidth="40.0" mnemonicParsing="false" onAction="#previousMedia" prefHeight="38.0" prefWidth="54.0" style="-fx-background-radius: 100; -fx-background-insets: 50;">
+               <graphic>
+                  <FontIcon iconLiteral="gmi-skip-previous" iconSize="35" />
+               </graphic></Button>
+            <Button fx:id="pauseButton" layoutX="370.0" layoutY="2.0" minWidth="40.0" mnemonicParsing="false" onAction="#pauseMedia" prefHeight="38.0" prefWidth="54.0" style="-fx-background-radius: 100; -fx-background-insets: 50;">
+               <graphic>
+                  <FontIcon iconLiteral="gmi-pause-circle-outline" iconSize="35" />
+               </graphic></Button>
+            <Slider fx:id="volumeSlider" layoutX="609.0" layoutY="17.0" prefHeight="9.0" prefWidth="140.0" style="-fx-max-width: 10000;" value="50.0" />
+            <ImageView fitHeight="30.0" fitWidth="38.0" layoutX="564.0" layoutY="10.0" pickOnBounds="true" preserveRatio="true" />
+            <FontIcon iconLiteral="gmi-volume-up" iconSize="35" layoutX="574.0" layoutY="41.0" />
+            <Button fx:id="addButton" layoutX="202.0" layoutY="7.0" mnemonicParsing="false" onAction="#addMediaToPlaylist" style="-fx-background-radius: 1000; -fx-background-insets: 50;">
+               <graphic>
+                  <FontIcon iconLiteral="gmi-add" iconSize="30" />
+               </graphic>
+            </Button>
+            <Button fx:id="shareButton" layoutX="486.0" layoutY="8.0" mnemonicParsing="false" onAction="#shareMedia" style="-fx-background-radius: 1000; -fx-background-insets: 50;">
+               <graphic>
+                  <FontIcon iconLiteral="gmi-share" iconSize="28" />
+               </graphic>
+            </Button>
+            <Label fx:id="timeLabel" layoutX="155.0" layoutY="41.0" text="0:00" textFill="#f5f0f0" />
+            <Slider fx:id="progressBar" layoutX="197.0" layoutY="43.0" prefHeight="14.0" prefWidth="355.0" />
+         </children>
+         <effect>
+            <ColorAdjust />
+         </effect>
+      </AnchorPane>
+      <VBox layoutX="-1.0" layoutY="-1.0" prefHeight="366.0" prefWidth="173.0" style="-fx-background-color: #353143;">
+         <children>
+            <Button fx:id="playlistButton" mnemonicParsing="false" onAction="#choosePlaylist" prefHeight="59.0" prefWidth="173.0" text="PlayList1" />
+            <ListView fx:id="playlistsListView" prefHeight="366.0" prefWidth="173.0" style="-fx-background-color: grey;" />
+         </children>
+      </VBox>
+      <Label fx:id="songLabel" alignment="CENTER" layoutX="-1.0" layoutY="364.0" prefHeight="30.0" prefWidth="763.0" style="-fx-background-color: #332c54; -fx-background-insets: 1;" text="SongName" textFill="#f1effc">
+         <font>
+            <Font size="17.0" />
+         </font>
+      </Label>
+      <Label fx:id="nameLabel" layoutX="176.0" layoutY="12.0" prefHeight="30.0" prefWidth="582.0" text="Music" textFill="#ebe8e8">
+         <font>
+            <Font name="System Bold" size="23.0" />
+         </font>
+      </Label>
+      <ListView fx:id="songsListView" layoutX="173.0" layoutY="-2.0" onDragDropped="#handleDrop" onDragOver="#handleDragOver" prefHeight="366.0" prefWidth="588.0" style="-fx-background-color: #222020;" />
+   </children>
+</AnchorPane>
