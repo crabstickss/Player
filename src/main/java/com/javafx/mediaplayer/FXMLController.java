@@ -257,6 +257,10 @@ public class FXMLController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         songNumber = 0;
+        File musicData = new File("musicData");
+        if (!musicData.exists()) {
+            musicData.mkdir();
+        }
         File file = new File("musicData/currentList.txt");
         String[] songs;
         if (!file.exists()) {
