@@ -214,6 +214,9 @@ public class FXMLController implements Initializable {
                     if (isPlaying) mediaPlayer.stop();
                     playSong();
                     refreshProgressBar();
+                } else if (mouseEvent.getClickCount() == 3) {
+                    if (isPlaying) mediaPlayer.stop();
+                    refreshProgressBar();
                 }
             });
         });
