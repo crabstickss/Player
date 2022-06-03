@@ -1,12 +1,46 @@
 package com.javafx.mediaplayer;
 
+import javafx.scene.control.Label;
+import javafx.scene.control.Slider;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
 
 public class Utils {
+    protected static void refreshProgressBar(Slider progressBar, Media media, MediaPlayer mediaPlayer, Label timeLabel, Label timeDuration) {
+        progressBar.setOnMousePressed(event -> mediaPlayer.seek(Duration.seconds(progressBar.getValue())));
+        progressBar.setOnMouseDragged(event -> mediaPlayer.seek(Duration.seconds(progressBar.getValue())));
+        mediaPlayer.setOnReady(() -> {
+            Duration total = media.getDuration();
+            progressBar.setMax(total.toSeconds());
+        });
+
+        mediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
+            progressBar.setValue(newValue.toSeconds());
+            String[] musicTime = formatTime(mediaPlayer.getCurrentTime(), mediaPlayer.getTotalDuration()).split("/");
+            timeLabel.setText(musicTime[0]);
+            timeDuration.setText(musicTime[1]);
+        });
+    }
+    protected static void refreshCurrentSongs(ArrayList<File> curSongs) {
+        File curList = new File("musicData/currentList.txt");
+        String[] songs;
+        try {
+            songs = Files.readString(curList.toPath()).split("\n");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        for (int i = 0; i < songs.length; i++) {
+            File temp = new File(songs[i]);
+            curSongs.add(i, temp);
+        }
+    }
     protected static String formatTime(Duration elapsed, Duration duration) {
         int intElapsed = (int)Math.floor(elapsed.toSeconds());
         int elapsedMinutes = intElapsed / 60;

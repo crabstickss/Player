@@ -69,7 +69,7 @@ public class FXMLController implements Initializable {
         curSongs = new ArrayList<>();
         Utils.musicDataFolderCheck();
         Utils.currentListCheck();
-        refreshCurrentSongs();
+        Utils.refreshCurrentSongs(curSongs);
         initSongListView();
         changeVolume();
         playMedia();
@@ -125,46 +125,17 @@ public class FXMLController implements Initializable {
         }
         ObservableList<String> observableList = FXCollections.observableList(fileString);
         songsListView.setItems(observableList);
-        refreshCurrentSongs();
+        Utils.refreshCurrentSongs(curSongs);
     }
 
-    public void refreshCurrentSongs() {
-        File curList = new File("musicData/currentList.txt");
-        String[] songs;
-        try {
-            songs = Files.readString(curList.toPath()).split("\n");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-        for (int i = 0; i < songs.length; i++) {
-            File temp = new File(songs[i]);
-            curSongs.add(i, temp);
-        }
-    }
 
-    private void refreshProgressBar() {
-        progressBar.setOnMousePressed(event -> mediaPlayer.seek(Duration.seconds(progressBar.getValue())));
-        progressBar.setOnMouseDragged(event -> mediaPlayer.seek(Duration.seconds(progressBar.getValue())));
-        mediaPlayer.setOnReady(() -> {
-            Duration total = media.getDuration();
-            progressBar.setMax(total.toSeconds());
-        });
-
-        mediaPlayer.currentTimeProperty().addListener((observable, oldValue, newValue) -> {
-            progressBar.setValue(newValue.toSeconds());
-            String[] musicTime = Utils.formatTime(mediaPlayer.getCurrentTime(), mediaPlayer.getTotalDuration()).split("/");
-            timeLabel.setText(musicTime[0]);
-            timeDuration.setText(musicTime[1]);
-        });
-    }
 
     public void playMedia() {
         playButton.setOnMouseClicked(mouseEvent -> {
             if (isPlaying) mediaPlayer.stop();
             isPlaying = false;
             playSong();
-            refreshProgressBar();
-
+            Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
         });
     }
 
@@ -178,7 +149,7 @@ public class FXMLController implements Initializable {
             }
             playSong();
             songLabel.setText(curSongs.get(songNumber).getName());
-            refreshProgressBar();
+            Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
         });
     }
 
@@ -213,10 +184,10 @@ public class FXMLController implements Initializable {
                 if (mouseEvent.getClickCount() == 2) {
                     if (isPlaying) mediaPlayer.stop();
                     playSong();
-                    refreshProgressBar();
+                    Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
                 } else if (mouseEvent.getClickCount() == 3) {
                     if (isPlaying) mediaPlayer.stop();
-                    refreshProgressBar();
+                    Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
                 }
             });
         });
@@ -245,7 +216,7 @@ public class FXMLController implements Initializable {
                     songNumber = curSongs.size() - 2;
                 }
                 playSong();
-                refreshProgressBar();
+                Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
             }
             else {
                 progressBar.setValue(0);
