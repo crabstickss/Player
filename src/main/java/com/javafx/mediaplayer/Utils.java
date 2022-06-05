@@ -127,4 +127,19 @@ public class Utils {
         curList.write(playlists);
         curList.close();
     }
+    protected static void createPlaylist(String name, String songToAdd) {
+        File file = new File("musicData/playlists/" + name + ".txt");
+        File playlistsList = new File("musicData/playlists.txt");
+        try {
+            file.createNewFile();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        try {
+            Files.write(file.toPath(), songToAdd.getBytes(), StandardOpenOption.APPEND);
+            Files.write(playlistsList.toPath(), name.getBytes(), StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }
