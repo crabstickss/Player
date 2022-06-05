@@ -65,7 +65,9 @@ public class FXMLController implements Initializable {
         songNumber = 0;
         curSongs = new ArrayList<>();
         Utils.musicDataFolderCheck();
+        Utils.playlistsFolderCheck();
         Utils.currentListCheck();
+        Utils.playlistsListCheck();
         Utils.refreshCurrentSongs(curSongs);
         initSongListView();
         changeVolume();
