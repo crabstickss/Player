@@ -1,32 +1,29 @@
 package com.javafx.mediaplayer;
 
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
-import java.util.*;
-
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Slider;
 import javafx.scene.input.DragEvent;
-
-
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.util.Duration;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.StandardOpenOption;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.ResourceBundle;
 
 public class FXMLController implements Initializable {
     @FXML
@@ -84,6 +81,7 @@ public class FXMLController implements Initializable {
             event.acceptTransferModes(TransferMode.ANY);
         }
     }
+
     @FXML
     private void handleDrop(DragEvent event) {
         List<File> files = event.getDragboard().getFiles();
@@ -104,18 +102,15 @@ public class FXMLController implements Initializable {
             currSongsLength = songs.length;
         }
         String[] newSongs = new String[newSongsNum];
-        for (int i = 0; i < currSongsLength; i++) {
-            newSongs[i] = songs[i];
-        }
-        for (int i = 0; i < files.size(); i++) {
-            newSongs[i + currSongsLength] = files.get(i).toString();
-        }
-        for (int i = 0; i < newSongsNum; i++){
-            String[] temp = newSongs[i].split("\\\\");
-            List<String> al = Arrays.asList(temp);
-            fileString.add(al.get(al.size() - 1));
-        }
-        for (String song: newSongs) {
+        createNewSongsList(files, fileString, newSongsNum, currSongsLength, songs, newSongs);
+        addNewSongsToFile(curList, newSongs);
+        ObservableList<String> observableList = FXCollections.observableList(fileString);
+        songsListView.setItems(observableList);
+        Utils.refreshCurrentSongs(curSongs);
+    }
+
+    private void addNewSongsToFile(File curList, String[] newSongs) {
+        for (String song : newSongs) {
             try {
                 Files.write(curList.toPath(), song.getBytes(), StandardOpenOption.APPEND);
                 Files.write(curList.toPath(), "\n".getBytes(), StandardOpenOption.APPEND);
@@ -123,11 +118,21 @@ public class FXMLController implements Initializable {
                 throw new RuntimeException(e);
             }
         }
-        ObservableList<String> observableList = FXCollections.observableList(fileString);
-        songsListView.setItems(observableList);
-        Utils.refreshCurrentSongs(curSongs);
     }
 
+    private void createNewSongsList(List<File> files, List<String> fileString, int newSongsNum, int currSongsLength, String[] songs, String[] newSongs) {
+        for (int i = 0; i < currSongsLength; i++) {
+            newSongs[i] = songs[i];
+        }
+        for (int i = 0; i < files.size(); i++) {
+            newSongs[i + currSongsLength] = files.get(i).toString();
+        }
+        for (int i = 0; i < newSongsNum; i++) {
+            String[] temp = newSongs[i].split("\\\\");
+            List<String> al = Arrays.asList(temp);
+            fileString.add(al.get(al.size() - 1));
+        }
+    }
 
 
     public void playMedia() {
@@ -217,8 +222,7 @@ public class FXMLController implements Initializable {
                 }
                 playSong();
                 Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
-            }
-            else {
+            } else {
                 progressBar.setValue(0);
                 mediaPlayer.seek(Duration.seconds(0));
             }
