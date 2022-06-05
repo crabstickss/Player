@@ -64,8 +64,32 @@ public class Utils {
             musicData.mkdir();
         }
     }
+    protected static void playlistsFolderCheck() {
+        File playlists = new File("musicData/playlists");
+        if (!playlists.exists()) {
+            playlists.mkdir();
+        }
+    }
     protected static void currentListCheck() {
         File file = new File("musicData/currentList.txt");
+        if (!file.exists()) {
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try {
+                FileWriter fw = new FileWriter(file.toString());
+                fw.write("");
+                fw.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+    protected static void playlistsListCheck() {
+        File file = new File("musicData/playlists.txt");
         if (!file.exists()) {
             try {
                 file.createNewFile();
