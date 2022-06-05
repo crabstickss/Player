@@ -6,7 +6,6 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -40,9 +39,11 @@ public class FXMLController implements Initializable {
     @FXML
     private Button playlistButton;
     @FXML
-    private ListView<?> playlistsListView;
-    @FXML
     private Button shareButton;
+    @FXML
+    public ListView<String> playlistsListView;
+    @FXML
+    private ListView<String> songsListView;
     @FXML
     private Label songLabel;
     @FXML
@@ -52,25 +53,27 @@ public class FXMLController implements Initializable {
     @FXML
     private Slider progressBar;
     @FXML
-    private ListView<String> songsListView;
-    @FXML
     private Slider volumeSlider;
-    public ArrayList<File> curSongs;
+    public static ArrayList<File> curSongs;
+    public static ArrayList<String> playlistsList;
     public boolean isPlaying;
     public Media media;
     public MediaPlayer mediaPlayer;
-    public int songNumber;
+    public static int songNumber;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         songNumber = 0;
         curSongs = new ArrayList<>();
+        playlistsList = new ArrayList<>();
         Utils.musicDataFolderCheck();
         Utils.playlistsFolderCheck();
         Utils.currentListCheck();
         Utils.playlistsListCheck();
         Utils.refreshCurrentSongs(curSongs);
+        Utils.refreshPlaylistsList(playlistsList);
         initSongListView();
+        initPlaylistsListView();
         changeVolume();
         playMedia();
         pauseMedia();
@@ -107,6 +110,11 @@ public class FXMLController implements Initializable {
         String[] newSongs = new String[newSongsNum];
         createNewSongsList(files, fileString, newSongsNum, currSongsLength, songs, newSongs);
         addNewSongsToFile(curList, newSongs);
+        Utils.refreshCurrentSongs(curSongs);
+        for (int i = 0; i < curSongs.size(); i++) {
+            String temp = curSongs.get(i).getName();
+            fileString.add(temp);
+        }
         ObservableList<String> observableList = FXCollections.observableList(fileString);
         songsListView.setItems(observableList);
         Utils.refreshCurrentSongs(curSongs);
@@ -130,13 +138,7 @@ public class FXMLController implements Initializable {
         for (int i = 0; i < files.size(); i++) {
             newSongs[i + currSongsLength] = files.get(i).toString();
         }
-        for (int i = 0; i < newSongsNum; i++) {
-            String[] temp = newSongs[i].split("\\\\");
-            List<String> al = Arrays.asList(temp);
-            fileString.add(al.get(al.size() - 1));
-        }
     }
-
 
     public void playMedia() {
         playButton.setOnMouseClicked(mouseEvent -> {
@@ -161,7 +163,6 @@ public class FXMLController implements Initializable {
         });
     }
 
-
     public void pauseMedia() {
         pauseButton.setOnMouseClicked(mouseEvent -> {
             mediaPlayer.pause();
@@ -170,16 +171,21 @@ public class FXMLController implements Initializable {
 
     public void addMediaToPlaylist() {
         addButton.setOnMouseClicked(mouseEvent -> {
-            try {
-                FXMLLoader fxmlLoader = new FXMLLoader();
-                fxmlLoader.setLocation(getClass().getResource("addPlaylist.fxml"));
-                Scene scene = new Scene(fxmlLoader.load(), 200, 320);
-                Stage stage = new Stage();
-                stage.setTitle("Playlists");
-                stage.setScene(scene);
-                stage.show();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
+            if (songsListView.getSelectionModel().getSelectedItem() != null) {
+                try {
+                    FXMLLoader fxmlLoader = new FXMLLoader();
+                    fxmlLoader.setLocation(getClass().getResource("addPlaylist.fxml"));
+                    Scene scene = new Scene(fxmlLoader.load(), 200, 320);
+                    Stage stage = new Stage();
+                    stage.setTitle("Playlists");
+                    stage.setScene(scene);
+                    stage.showAndWait();
+                    Utils.refreshPlaylistsList(playlistsList);
+                    ObservableList<String> observableList = FXCollections.observableList(playlistsList);
+                    playlistsListView.setItems(observableList);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
             }
         });
     }
@@ -187,11 +193,33 @@ public class FXMLController implements Initializable {
     public void shareMedia() {
     }
 
-    public void choosePlaylist() {
+    private void initPlaylistsListView() {
+        ObservableList<String> observableList = FXCollections.observableList(playlistsList);
+        playlistsListView.setItems(observableList);
+        playlistsListView.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
+            playlistsListView.setOnMouseClicked(mouseEvent -> {
+                if (mouseEvent.getClickCount() == 2) {
+                    try {
+                        Utils.fromPlaylistToCurList(playlistsListView.getSelectionModel().getSelectedItem());
+                        Utils.refreshCurrentSongs(curSongs);
+                        System.out.println(curSongs);
+                        List<String> fileString = new ArrayList<>();
+                        for (int i = 0; i < curSongs.size(); i++) {
+                            String temp = curSongs.get(i).getName();
+                            fileString.add(temp);
+                        }
+                        ObservableList<String> observableSongList = FXCollections.observableList(fileString);
+                        songsListView.setItems(observableSongList);
+                        songNumber = 1;
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+            });
+        });
     }
-
     private void initSongListView() {
-        songsListView.setPlaceholder(new Label("Nothing here"));
+        songsListView.setPlaceholder(new Label("Nothing here..."));
         songsListView.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
             String selectedSong = songsListView.getSelectionModel().getSelectedItem();
             for (int i = 0; i < curSongs.size() - 1; i++) {
@@ -226,7 +254,6 @@ public class FXMLController implements Initializable {
         mediaPlayer.play();
         isPlaying = true;
     }
-
     public void previousMedia() {
         previousButton.setOnMouseClicked(mouseEvent -> {
             if (isPlaying) mediaPlayer.stop();
