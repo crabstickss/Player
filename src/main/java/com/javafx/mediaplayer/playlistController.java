@@ -16,6 +16,7 @@ import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class playlistController implements Initializable {
@@ -41,9 +42,10 @@ public class playlistController implements Initializable {
             if (playlistTextField.getText().equals("") && !isPlaylistSelected) {
                 createDefaultPlaylist(songToAdd);
             } else if (isPlaylistSelected) {
-                Utils.createPlaylist(addPlaylistListView.getSelectionModel().getSelectedItem(), songToAdd);
+                Utils.addToExistPlaylist(addPlaylistListView.getSelectionModel().getSelectedItem(), songToAdd);
             } else {
                 if (!playlistTextField.getText().equals("")) {
+                    System.out.println(playlistTextField.getText());
                     Utils.createPlaylist(playlistTextField.getText(), songToAdd);
                 }
                 else {
@@ -58,7 +60,13 @@ public class playlistController implements Initializable {
         File file = new File("musicData/playlists.txt");
         int number;
         try {
-            number = Files.readString(file.toPath()).split("\n").length;
+            String[] readed = Files.readString(file.toPath()).split("\n");
+            if (readed[0].equals("")) {
+                number = 0;
+            } else {
+                number = readed.length;
+            }
+            number++;
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
