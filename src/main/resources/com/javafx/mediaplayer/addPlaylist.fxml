@@ -3,11 +3,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="287.0" prefWidth="200.0" style="-fx-background-color: #332c54;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="$CONTROLLER_NAME$">
+<AnchorPane prefHeight="300.0" prefWidth="200.0" style="-fx-background-color: #332c54;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.mediaplayer.playlistController">
    <children>
-      <TextField fx:id="playlistTextField" layoutX="20.0" layoutY="200.0" onAction="#enterPlaylistName" promptText="Enter playlist's name..." />
-      <Button fx:id="addPlaylistOkButton" layoutX="20.0" layoutY="247.0" mnemonicParsing="false" onAction="#addPlaylistOk" style="-fx-background-color: white; -fx-background-radius: 50;" text="OK" textAlignment="CENTER" />
-      <Button fx:id="addPlaylistCancelButton" layoutX="124.0" layoutY="247.0" mnemonicParsing="false" onAction="#addPlaylistCancel" style="-fx-background-color: white; -fx-background-radius: 30;" text="Cancel" textAlignment="CENTER" />
-      <ListView fx:id="addPlaylistListView" layoutX="6.0" layoutY="4.0" prefHeight="183.0" prefWidth="188.0" />
+      <TextField fx:id="playlistTextField" layoutX="20.0" layoutY="220.0" onAction="#enterPlaylistName" promptText="Enter playlist's name..." />
+      <Button fx:id="addPlaylistOkButton" layoutX="20.0" layoutY="267.0" mnemonicParsing="false" onAction="#addPlaylistOk" style="-fx-background-color: white; -fx-background-radius: 50;" text="OK" textAlignment="CENTER" />
+      <Button fx:id="addPlaylistCancelButton" layoutX="124.0" layoutY="267.0" mnemonicParsing="false" onAction="#addPlaylistCancel" style="-fx-background-color: white; -fx-background-radius: 30;" text="Cancel" textAlignment="CENTER" />
+      <ListView fx:id="addPlaylistListView" layoutX="6.0" layoutY="4.0" prefHeight="202.0" prefWidth="188.0" />
    </children>
 </AnchorPane>
