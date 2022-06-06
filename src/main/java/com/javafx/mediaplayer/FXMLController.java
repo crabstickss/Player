@@ -19,6 +19,7 @@ import javafx.stage.Stage;
 import javafx.util.Duration;
 
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -108,7 +109,7 @@ public class FXMLController implements Initializable {
             currSongsLength = songs.length;
         }
         String[] newSongs = new String[newSongsNum];
-        createNewSongsList(files, fileString, newSongsNum, currSongsLength, songs, newSongs);
+        createNewSongsList(files, currSongsLength, songs, newSongs);
         addNewSongsToFile(curList, newSongs);
         Utils.refreshCurrentSongs(curSongs);
         for (int i = 0; i < curSongs.size(); i++) {
@@ -117,10 +118,17 @@ public class FXMLController implements Initializable {
         }
         ObservableList<String> observableList = FXCollections.observableList(fileString);
         songsListView.setItems(observableList);
-        Utils.refreshCurrentSongs(curSongs);
     }
 
     private void addNewSongsToFile(File curList, String[] newSongs) {
+        FileWriter writer;
+        try {
+            writer = new FileWriter(curList);
+            writer.write("");
+            writer.close();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         for (String song : newSongs) {
             try {
                 Files.write(curList.toPath(), song.getBytes(), StandardOpenOption.APPEND);
@@ -131,7 +139,7 @@ public class FXMLController implements Initializable {
         }
     }
 
-    private void createNewSongsList(List<File> files, List<String> fileString, int newSongsNum, int currSongsLength, String[] songs, String[] newSongs) {
+    private void createNewSongsList(List<File> files, int currSongsLength, String[] songs, String[] newSongs) {
         for (int i = 0; i < currSongsLength; i++) {
             newSongs[i] = songs[i];
         }
@@ -202,7 +210,6 @@ public class FXMLController implements Initializable {
                     try {
                         Utils.fromPlaylistToCurList(playlistsListView.getSelectionModel().getSelectedItem());
                         Utils.refreshCurrentSongs(curSongs);
-                        System.out.println(curSongs);
                         List<String> fileString = new ArrayList<>();
                         for (int i = 0; i < curSongs.size(); i++) {
                             String temp = curSongs.get(i).getName();
