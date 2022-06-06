@@ -137,7 +137,19 @@ public class Utils {
         }
         try {
             Files.write(file.toPath(), songToAdd.getBytes(), StandardOpenOption.APPEND);
+            Files.write(file.toPath(), "\n".getBytes(), StandardOpenOption.APPEND);
             Files.write(playlistsList.toPath(), name.getBytes(), StandardOpenOption.APPEND);
+            Files.write(playlistsList.toPath(), "\n".getBytes(), StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    protected static void addToExistPlaylist(String name, String songToAdd) {
+        File file = new File("musicData/playlists/" + name + ".txt");
+        try {
+            Files.write(file.toPath(), songToAdd.getBytes(), StandardOpenOption.APPEND);
+            Files.write(file.toPath(), "\n".getBytes(), StandardOpenOption.APPEND);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
