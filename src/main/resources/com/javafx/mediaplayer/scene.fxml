@@ -40,9 +40,9 @@
             <FontIcon iconLiteral="gmi-add" iconSize="30" />
          </graphic>
       </Button>
-      <Button fx:id="shareButton" layoutX="486.0" layoutY="8.0" mnemonicParsing="false" onAction="#shareMedia" style="-fx-background-radius: 1000; -fx-background-insets: 50;">
+      <Button fx:id="shuffleButton" layoutX="486.0" layoutY="8.0" mnemonicParsing="false" onAction="#shuffleMedia" style="-fx-background-radius: 1000; -fx-background-insets: 50;">
          <graphic>
-            <FontIcon iconLiteral="gmi-share" iconSize="28" />
+            <FontIcon iconLiteral="gmi-shuffle" iconSize="28" />
          </graphic>
       </Button>
       <Label fx:id="timeLabel" layoutX="155.0" layoutY="41.0" text="0:00" textFill="#f5f0f0" />

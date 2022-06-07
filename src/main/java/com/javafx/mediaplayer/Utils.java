@@ -120,7 +120,6 @@ public class Utils {
         String playlists;
         try {
             playlists = Files.readString(playlistsFile.toPath());
-            System.out.println(playlists);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
