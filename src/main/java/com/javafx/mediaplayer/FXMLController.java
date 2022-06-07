@@ -23,6 +23,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.*;
+
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
@@ -122,6 +126,56 @@ public class FXMLController implements Initializable {
         songsListView.setItems(observableList);
     }
 
+    @FXML
+    private void handleDragOverPlaylists(DragEvent event) {
+        if (event.getDragboard().hasFiles()) {
+            event.acceptTransferModes(TransferMode.ANY);
+        }
+    }
+
+    @FXML
+    private void handleDropPlaylists(DragEvent event) {
+        List<File> files = event.getDragboard().getFiles();
+        File playlistsList = new File("musicData/playlists.txt");
+        List<String> playlists = new ArrayList<>();
+        try {
+            playlists.addAll(Arrays.asList(Files.readString(playlistsList.toPath()).split("\n")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        for (File file : files) {
+            if (file.isDirectory()) {
+                File newPlayList = new File("musicData/playlists/" + file.getName() + ".txt");
+                System.out.println(newPlayList);
+                try {
+                    newPlayList.createNewFile();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                for (File songPath : Objects.requireNonNull(file.listFiles())) {
+                    Utils.addToExistPlaylist(file.getName(), songPath.toString());
+                    try {
+                        Files.write(playlistsList.toPath(), file.getName().replace(".txt", "").getBytes(), StandardOpenOption.APPEND);
+                        Files.write(playlistsList.toPath(), "\n".getBytes(), StandardOpenOption.APPEND);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+            } else {
+                try {
+                    Files.move(file.toPath(), Path.of("musicData/playlists/" + file.getName()), new StandardCopyOption[]{REPLACE_EXISTING});
+                    Files.write(playlistsList.toPath(), file.getName().replace(".txt", "").getBytes(), StandardOpenOption.APPEND);
+                    Files.write(playlistsList.toPath(), "\n".getBytes(), StandardOpenOption.APPEND);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            playlists.add(file.getName().replace(".txt", ""));
+        }
+        ObservableList<String> observableList = FXCollections.observableList(playlists);
+        playlistsListView.setItems(observableList);
+    }
     private void addNewSongsToFile(File curList, String[] newSongs) {
         FileWriter writer;
         try {
