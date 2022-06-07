@@ -23,6 +23,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
+import static java.nio.file.StandardCopyOption.*;
+
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
 
@@ -75,6 +79,8 @@ public class FXMLController implements Initializable {
         Utils.refreshPlaylistsList(playlistsList);
         initSongListView();
         initPlaylistsListView();
+        initSongListViewSelection();
+        initPlaylistsListViewSelection();
         changeVolume();
         playMedia();
         pauseMedia();
@@ -120,6 +126,56 @@ public class FXMLController implements Initializable {
         songsListView.setItems(observableList);
     }
 
+    @FXML
+    private void handleDragOverPlaylists(DragEvent event) {
+        if (event.getDragboard().hasFiles()) {
+            event.acceptTransferModes(TransferMode.ANY);
+        }
+    }
+
+    @FXML
+    private void handleDropPlaylists(DragEvent event) {
+        List<File> files = event.getDragboard().getFiles();
+        File playlistsList = new File("musicData/playlists.txt");
+        List<String> playlists = new ArrayList<>();
+        try {
+            playlists.addAll(Arrays.asList(Files.readString(playlistsList.toPath()).split("\n")));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        for (File file : files) {
+            if (file.isDirectory()) {
+                File newPlayList = new File("musicData/playlists/" + file.getName() + ".txt");
+                System.out.println(newPlayList);
+                try {
+                    newPlayList.createNewFile();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                for (File songPath : Objects.requireNonNull(file.listFiles())) {
+                    Utils.addToExistPlaylist(file.getName(), songPath.toString());
+                    try {
+                        Files.write(playlistsList.toPath(), file.getName().replace(".txt", "").getBytes(), StandardOpenOption.APPEND);
+                        Files.write(playlistsList.toPath(), "\n".getBytes(), StandardOpenOption.APPEND);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+            } else {
+                try {
+                    Files.move(file.toPath(), Path.of("musicData/playlists/" + file.getName()), new StandardCopyOption[]{REPLACE_EXISTING});
+                    Files.write(playlistsList.toPath(), file.getName().replace(".txt", "").getBytes(), StandardOpenOption.APPEND);
+                    Files.write(playlistsList.toPath(), "\n".getBytes(), StandardOpenOption.APPEND);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            playlists.add(file.getName().replace(".txt", ""));
+        }
+        ObservableList<String> observableList = FXCollections.observableList(playlists);
+        playlistsListView.setItems(observableList);
+    }
     private void addNewSongsToFile(File curList, String[] newSongs) {
         FileWriter writer;
         try {
@@ -159,16 +215,20 @@ public class FXMLController implements Initializable {
 
     public void nextMedia() {
         nextButton.setOnMouseClicked(mouseEvent -> {
-            if (isPlaying) mediaPlayer.stop();
-            if (songNumber < curSongs.size() - 2) {
-                songNumber++;
-            } else {
-                songNumber = 0;
-            }
-            playSong();
-            songLabel.setText(curSongs.get(songNumber).getName());
-            Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
+            playNextMedia();
         });
+    }
+
+    private void playNextMedia() {
+        if (isPlaying) mediaPlayer.stop();
+        if (songNumber < curSongs.size() - 1) {
+            songNumber++;
+        } else {
+            songNumber = 0;
+        }
+        playSong();
+        songLabel.setText(curSongs.get(songNumber).getName());
+        Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
     }
 
     public void pauseMedia() {
@@ -204,6 +264,9 @@ public class FXMLController implements Initializable {
     private void initPlaylistsListView() {
         ObservableList<String> observableList = FXCollections.observableList(playlistsList);
         playlistsListView.setItems(observableList);
+    }
+
+    private void initPlaylistsListViewSelection() {
         playlistsListView.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
             playlistsListView.setOnMouseClicked(mouseEvent -> {
                 if (mouseEvent.getClickCount() == 2) {
@@ -225,11 +288,15 @@ public class FXMLController implements Initializable {
             });
         });
     }
+
     private void initSongListView() {
         songsListView.setPlaceholder(new Label("Nothing here..."));
+    }
+
+    private void initSongListViewSelection() {
         songsListView.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
             String selectedSong = songsListView.getSelectionModel().getSelectedItem();
-            for (int i = 0; i < curSongs.size() - 1; i++) {
+            for (int i = 0; i < curSongs.size(); i++) {
                 String temp = curSongs.get(i).getName();
                 if (temp.equals(selectedSong)) {
                     songNumber = i;
@@ -260,6 +327,7 @@ public class FXMLController implements Initializable {
         songLabel.setText(curSongs.get(songNumber).getName());
         mediaPlayer.play();
         isPlaying = true;
+        mediaPlayer.setOnEndOfMedia(() -> playNextMedia());
     }
     public void previousMedia() {
         previousButton.setOnMouseClicked(mouseEvent -> {
@@ -268,13 +336,14 @@ public class FXMLController implements Initializable {
                 if (songNumber > 0) {
                     songNumber--;
                 } else {
-                    songNumber = curSongs.size() - 2;
+                    songNumber = curSongs.size() - 1;
                 }
                 playSong();
                 Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
             } else {
                 progressBar.setValue(0);
                 mediaPlayer.seek(Duration.seconds(0));
+                mediaPlayer.play();
             }
         });
     }
