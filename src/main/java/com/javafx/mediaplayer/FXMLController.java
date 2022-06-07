@@ -3,6 +3,7 @@ package com.javafx.mediaplayer;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -44,7 +45,7 @@ public class FXMLController implements Initializable {
     @FXML
     private Button playlistButton;
     @FXML
-    private Button shareButton;
+    private Button shuffleButton;
     @FXML
     public ListView<String> playlistsListView;
     @FXML
@@ -258,9 +259,6 @@ public class FXMLController implements Initializable {
         });
     }
 
-    public void shareMedia() {
-    }
-
     private void initPlaylistsListView() {
         ObservableList<String> observableList = FXCollections.observableList(playlistsList);
         playlistsListView.setItems(observableList);
@@ -345,6 +343,12 @@ public class FXMLController implements Initializable {
                 mediaPlayer.seek(Duration.seconds(0));
                 mediaPlayer.play();
             }
+        });
+    }
+
+    public void shuffleMedia() {
+        shuffleButton.setOnMouseClicked(mouseEvent -> {
+
         });
     }
 }
