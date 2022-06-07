@@ -14,7 +14,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 
 public class Utils {
-    protected static void refreshProgressBar(Slider progressBar, Media media, MediaPlayer mediaPlayer, Label timeLabel, Label timeDuration) {
+    public static void refreshProgressBar(Slider progressBar, Media media, MediaPlayer mediaPlayer, Label timeLabel, Label timeDuration) {
         progressBar.setOnMousePressed(event -> mediaPlayer.seek(Duration.seconds(progressBar.getValue())));
         progressBar.setOnMouseDragged(event -> mediaPlayer.seek(Duration.seconds(progressBar.getValue())));
         mediaPlayer.setOnReady(() -> {
@@ -29,7 +29,7 @@ public class Utils {
             timeDuration.setText(musicTime[1]);
         });
     }
-    protected static void refreshCurrentSongs(ArrayList<File> curSongs) {
+    public static void refreshCurrentSongs(ArrayList<File> curSongs) {
         File curList = new File("musicData/currentList.txt");
         curSongs.clear();
         String[] songs;
@@ -43,7 +43,7 @@ public class Utils {
             curSongs.add(i, temp);
         }
     }
-    protected static void refreshPlaylistsList(ArrayList<String> playlistsList) {
+    public static void refreshPlaylistsList(ArrayList<String> playlistsList) {
         File curPlaylistsList = new File("musicData/playlists.txt");
         String[] playlists;
         playlistsList.clear();
@@ -57,7 +57,7 @@ public class Utils {
             playlistsList.add(i, temp);
         }
     }
-    protected static String formatTime(Duration elapsed, Duration duration) {
+    public static String formatTime(Duration elapsed, Duration duration) {
         int intElapsed = (int)Math.floor(elapsed.toSeconds());
         int elapsedMinutes = intElapsed / 60;
         int elapsedSeconds = intElapsed - elapsedMinutes * 60;
@@ -74,19 +74,19 @@ public class Utils {
                     elapsedSeconds);
         }
     }
-    protected static void musicDataFolderCheck() {
+    public static void musicDataFolderCheck() {
         File musicData = new File("musicData");
         if (!musicData.exists()) {
             musicData.mkdir();
         }
     }
-    protected static void playlistsFolderCheck() {
+    public static void playlistsFolderCheck() {
         File playlists = new File("musicData/playlists");
         if (!playlists.exists()) {
             playlists.mkdir();
         }
     }
-    protected static void currentListCheck() {
+    public static void currentListCheck() {
         File file = new File("musicData/currentList.txt");
         if (!file.exists()) {
             try {
@@ -104,7 +104,7 @@ public class Utils {
             }
         }
     }
-    protected static void playlistsListCheck() {
+    public static void playlistsListCheck() {
         File file = new File("musicData/playlists.txt");
         if (!file.exists()) {
             try {
@@ -114,7 +114,7 @@ public class Utils {
             }
         }
     }
-    protected static void fromPlaylistToCurList(String selectedItem) throws IOException {
+    public static void fromPlaylistToCurList(String selectedItem) throws IOException {
         File playlistsFile = new File("musicData/playlists/" + selectedItem + ".txt");
         FileWriter curList = new FileWriter("musicData/currentList.txt");
         String playlists;
@@ -127,7 +127,7 @@ public class Utils {
         curList.write(playlists);
         curList.close();
     }
-    protected static void createPlaylist(String name, String songToAdd) {
+    public static void createPlaylist(String name, String songToAdd) {
         File file = new File("musicData/playlists/" + name + ".txt");
         File playlistsList = new File("musicData/playlists.txt");
         try {
@@ -145,7 +145,7 @@ public class Utils {
         }
     }
 
-    protected static void addToExistPlaylist(String name, String songToAdd) {
+    public static void addToExistPlaylist(String name, String songToAdd) {
         File file = new File("musicData/playlists/" + name + ".txt");
         try {
             Files.write(file.toPath(), songToAdd.getBytes(), StandardOpenOption.APPEND);
