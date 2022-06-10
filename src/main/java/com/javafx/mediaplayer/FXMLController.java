@@ -4,6 +4,7 @@ package com.javafx.mediaplayer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -13,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -64,6 +66,7 @@ public class FXMLController implements Initializable {
     public static ArrayList<File> curSongs;
     public static ArrayList<String> playlistsList;
     public boolean isPlaying;
+    public boolean isPaused;
     public Media media;
     public MediaPlayer mediaPlayer;
     public static int songNumber;
@@ -132,6 +135,7 @@ public class FXMLController implements Initializable {
     private void handleDragOverPlaylists(DragEvent event) {
         if (event.getDragboard().hasFiles()) {
             event.acceptTransferModes(TransferMode.ANY);
+
         }
     }
 
@@ -208,16 +212,17 @@ public class FXMLController implements Initializable {
 
     public void playMedia() {
         playButton.setOnMouseClicked(mouseEvent -> {
-            if (isPlaying) mediaPlayer.stop();
-            isPlaying = false;
-            playSong();
+
+            mediaPlayer.play();
             Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
         });
     }
 
+
     public void nextMedia() {
         nextButton.setOnMouseClicked(mouseEvent -> {
             playNextMedia();
+            Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
         });
     }
 
@@ -230,12 +235,12 @@ public class FXMLController implements Initializable {
         }
         playSong();
         songLabel.setText(curSongs.get(songNumber).getName());
-        Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
     }
 
     public void pauseMedia() {
         pauseButton.setOnMouseClicked(mouseEvent -> {
             mediaPlayer.pause();
+            Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
         });
     }
 
@@ -254,12 +259,12 @@ public class FXMLController implements Initializable {
                 PrintWriter writer = new PrintWriter(curList);
                 writer.print("");
                 writer.close();
-            for (String song : songs) {
-                File temp = new File(song);
-                songsList.add(temp.getName().replace(".txt", ""));
-                Files.write(curList.toPath(), song.getBytes(), StandardOpenOption.APPEND);
-                Files.write(curList.toPath(), "\n".getBytes(), StandardOpenOption.APPEND);
-            }
+                for (String song : songs) {
+                    File temp = new File(song);
+                    songsList.add(temp.getName().replace(".txt", ""));
+                    Files.write(curList.toPath(), song.getBytes(), StandardOpenOption.APPEND);
+                    Files.write(curList.toPath(), "\n".getBytes(), StandardOpenOption.APPEND);
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -334,8 +339,7 @@ public class FXMLController implements Initializable {
                 if (mouseEvent.getClickCount() == 2) {
                     if (isPlaying) mediaPlayer.stop();
                     playSong();
-                    Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
-                } else if (mouseEvent.getClickCount() == 3) {
+                    Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration); } else if (mouseEvent.getClickCount() == 3) {
                     if (isPlaying) mediaPlayer.stop();
                     Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
                 }
@@ -366,8 +370,7 @@ public class FXMLController implements Initializable {
                     songNumber = curSongs.size() - 1;
                 }
                 playSong();
-                Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
-            } else {
+                Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration); } else {
                 progressBar.setValue(0);
                 mediaPlayer.seek(Duration.seconds(0));
                 mediaPlayer.play();
@@ -376,5 +379,4 @@ public class FXMLController implements Initializable {
     }
 
 }
-
 
