@@ -45,7 +45,6 @@ public class playlistController implements Initializable {
                 Utils.addToExistPlaylist(addPlaylistListView.getSelectionModel().getSelectedItem(), songToAdd);
             } else {
                 if (!playlistTextField.getText().equals("")) {
-                    System.out.println(playlistTextField.getText());
                     Utils.createPlaylist(playlistTextField.getText(), songToAdd);
                 }
                 else {
