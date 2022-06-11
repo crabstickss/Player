@@ -29,6 +29,9 @@ import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
 import java.nio.file.StandardOpenOption;
 import java.util.*;
+/**
+ * Class FXMLController aggregating interface elements.
+ */
 
 public class FXMLController implements Initializable {
     @FXML
@@ -65,7 +68,9 @@ public class FXMLController implements Initializable {
     public Media media;
     public MediaPlayer mediaPlayer;
     public static int songNumber;
-
+    /**
+     * Initializes UI elements.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         songNumber = 0;
@@ -87,7 +92,9 @@ public class FXMLController implements Initializable {
         previousMedia();
         nextMedia();
     }
-
+    /**
+     * Handling the drag-and-drop event.
+     */
     @FXML
     private void handleDragOver(DragEvent event) {
         if (event.getDragboard().hasFiles()) {
@@ -95,6 +102,9 @@ public class FXMLController implements Initializable {
         }
     }
 
+    /** Add track on pane with drag-and-drop event.
+     * @param event
+     */
     @FXML
     private void handleDrop(DragEvent event) {
         List<File> files = event.getDragboard().getFiles();
@@ -126,6 +136,9 @@ public class FXMLController implements Initializable {
         songsListView.setItems(observableList);
     }
 
+    /**Add playlist on pane with drag-and-drop event.
+     * @param event
+     */
     @FXML
     private void handleDragOverPlaylists(DragEvent event) {
         if (event.getDragboard().hasFiles()) {
@@ -133,6 +146,9 @@ public class FXMLController implements Initializable {
         }
     }
 
+    /** Drag events replace mouse events during drag-and-drop gesture.
+     * @param event
+     */
     @FXML
     private void handleDropPlaylists(DragEvent event) {
         List<File> files = event.getDragboard().getFiles();
@@ -176,6 +192,11 @@ public class FXMLController implements Initializable {
         ObservableList<String> observableList = FXCollections.observableList(playlists);
         playlistsListView.setItems(observableList);
     }
+
+    /**Adds a track to the file.
+     * @param curList
+     * @param newSongs
+     */
     private void addNewSongsToFile(File curList, String[] newSongs) {
         FileWriter writer;
         try {
@@ -195,6 +216,12 @@ public class FXMLController implements Initializable {
         }
     }
 
+    /** Create new SongList.
+     * @param files
+     * @param currSongsLength
+     * @param songs
+     * @param newSongs
+     */
     private void createNewSongsList(List<File> files, int currSongsLength, String[] songs, String[] newSongs) {
         for (int i = 0; i < currSongsLength; i++) {
             newSongs[i] = songs[i];
@@ -204,6 +231,9 @@ public class FXMLController implements Initializable {
         }
     }
 
+    /**
+     * Sets the action when the play button is pressed.
+     */
     public void playMedia() {
         playButton.setOnMouseClicked(mouseEvent -> {
             mediaPlayer.play();
@@ -211,12 +241,18 @@ public class FXMLController implements Initializable {
         });
     }
 
+    /**
+     *  Calls the next method of the player, stops the timer.
+     */
     public void nextMedia() {
         nextButton.setOnMouseClicked(mouseEvent -> {
             playNextMedia();
         });
     }
 
+    /**
+     *Sets the action whan the nextMedia button is pressed.
+     */
     private void playNextMedia() {
         if (isPlaying) mediaPlayer.stop();
         if (songNumber < curSongs.size() - 1) {
@@ -229,12 +265,18 @@ public class FXMLController implements Initializable {
         Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
     }
 
+    /**
+     *  Sets the action when the pause button is pressed.
+     */
     public void pauseMedia() {
         pauseButton.setOnMouseClicked(mouseEvent -> {
             mediaPlayer.pause();
         });
     }
 
+    /**
+     * Add a song to a PlayList.
+     */
     public void addMediaToPlaylist() {
         addButton.setOnMouseClicked(mouseEvent -> {
             if (songsListView.getSelectionModel().getSelectedItem() != null) {
@@ -256,14 +298,18 @@ public class FXMLController implements Initializable {
         });
     }
 
-    public void shareMedia() {
-    }
 
+    /**
+      Initialize the view for casting processing.
+     */
     private void initPlaylistsListView() {
         ObservableList<String> observableList = FXCollections.observableList(playlistsList);
         playlistsListView.setItems(observableList);
     }
 
+    /**
+     * Highlight the initialization of theviewfor casting processing.
+     */
     private void initPlaylistsListViewSelection() {
         playlistsListView.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
             playlistsListView.setOnMouseClicked(mouseEvent -> {
@@ -287,10 +333,16 @@ public class FXMLController implements Initializable {
         });
     }
 
+    /**
+     * Initialize the view for casting processing.
+     */
     private void initSongListView() {
         songsListView.setPlaceholder(new Label("Nothing here..."));
     }
 
+    /**
+     *  Highlight the initialization of theviewfor casting processing.
+     */
     private void initSongListViewSelection() {
         songsListView.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
             String selectedSong = songsListView.getSelectionModel().getSelectedItem();
@@ -314,11 +366,17 @@ public class FXMLController implements Initializable {
         });
     }
 
+    /**
+     * Logic of changing the value of the volume slider.
+     */
     private void changeVolume() {
         volumeSlider.valueProperty().addListener((observableValue, number, t1) ->
                 mediaPlayer.setVolume(volumeSlider.getValue() * 0.01));
     }
 
+    /**
+     *Playes playback
+     */
     private void playSong() {
         media = new Media(curSongs.get(songNumber).toURI().toString());
         mediaPlayer = new MediaPlayer(media);
@@ -327,6 +385,10 @@ public class FXMLController implements Initializable {
         isPlaying = true;
         mediaPlayer.setOnEndOfMedia(() -> playNextMedia());
     }
+
+    /**
+     *  Calls the previous method of the player, stops the timer.
+     */
     public void previousMedia() {
         previousButton.setOnMouseClicked(mouseEvent -> {
             if (isPlaying) mediaPlayer.stop();
