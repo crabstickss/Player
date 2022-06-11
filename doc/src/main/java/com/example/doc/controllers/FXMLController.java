@@ -372,9 +372,7 @@ public class FXMLController implements Initializable {
                 mediaPlayer.setVolume(volumeSlider.getValue() * 0.01));
     }
 
-    /**
-     *Playes playback
-     */
+    /** Playes playback */
     private void playSong() {
         media = new Media(curSongs.get(songNumber).toURI().toString());
         mediaPlayer = new MediaPlayer(media);
