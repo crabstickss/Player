@@ -333,9 +333,7 @@ public class FXMLController implements Initializable {
         });
     }
 
-    /**
-     * Initialize the view for casting processing.
-     */
+    /** Initialize the view for casting processing. */
     private void initSongListView() {
         songsListView.setPlaceholder(new Label("Nothing here..."));
     }
