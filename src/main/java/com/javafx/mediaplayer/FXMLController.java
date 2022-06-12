@@ -3,6 +3,8 @@ package com.javafx.mediaplayer;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -12,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.input.DragEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -21,6 +24,7 @@ import javafx.util.Duration;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.net.URL;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.*;
@@ -44,7 +48,7 @@ public class FXMLController implements Initializable {
     @FXML
     private Button playlistButton;
     @FXML
-    private Button shareButton;
+    private Button shuffleButton;
     @FXML
     public ListView<String> playlistsListView;
     @FXML
@@ -62,6 +66,7 @@ public class FXMLController implements Initializable {
     public static ArrayList<File> curSongs;
     public static ArrayList<String> playlistsList;
     public boolean isPlaying;
+    public boolean isPaused;
     public Media media;
     public MediaPlayer mediaPlayer;
     public static int songNumber;
@@ -130,6 +135,7 @@ public class FXMLController implements Initializable {
     private void handleDragOverPlaylists(DragEvent event) {
         if (event.getDragboard().hasFiles()) {
             event.acceptTransferModes(TransferMode.ANY);
+
         }
     }
 
@@ -146,20 +152,19 @@ public class FXMLController implements Initializable {
         for (File file : files) {
             if (file.isDirectory()) {
                 File newPlayList = new File("musicData/playlists/" + file.getName() + ".txt");
-                System.out.println(newPlayList);
                 try {
                     newPlayList.createNewFile();
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
+                try {
+                    Files.write(playlistsList.toPath(), file.getName().replace(".txt", "").getBytes(), StandardOpenOption.APPEND);
+                    Files.write(playlistsList.toPath(), "\n".getBytes(), StandardOpenOption.APPEND);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
                 for (File songPath : Objects.requireNonNull(file.listFiles())) {
                     Utils.addToExistPlaylist(file.getName(), songPath.toString());
-                    try {
-                        Files.write(playlistsList.toPath(), file.getName().replace(".txt", "").getBytes(), StandardOpenOption.APPEND);
-                        Files.write(playlistsList.toPath(), "\n".getBytes(), StandardOpenOption.APPEND);
-                    } catch (IOException e) {
-                        throw new RuntimeException(e);
-                    }
                 }
 
             } else {
@@ -171,6 +176,7 @@ public class FXMLController implements Initializable {
                     throw new RuntimeException(e);
                 }
             }
+            if (playlists.get(0).equals("")) playlists.remove(0);
             playlists.add(file.getName().replace(".txt", ""));
         }
         ObservableList<String> observableList = FXCollections.observableList(playlists);
@@ -206,14 +212,17 @@ public class FXMLController implements Initializable {
 
     public void playMedia() {
         playButton.setOnMouseClicked(mouseEvent -> {
+
             mediaPlayer.play();
             Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
         });
     }
 
+
     public void nextMedia() {
         nextButton.setOnMouseClicked(mouseEvent -> {
             playNextMedia();
+            Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
         });
     }
 
@@ -226,12 +235,41 @@ public class FXMLController implements Initializable {
         }
         playSong();
         songLabel.setText(curSongs.get(songNumber).getName());
-        Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
     }
 
     public void pauseMedia() {
         pauseButton.setOnMouseClicked(mouseEvent -> {
             mediaPlayer.pause();
+            Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
+        });
+    }
+
+    public void shuffleMedia() {
+        shuffleButton.setOnMouseClicked(mouseEvent -> {
+            File curList = new File("musicData/currentList.txt");
+            List<String> songs = new ArrayList<>();
+            List<String> songsList = new ArrayList<>();
+            try {
+                songs.addAll(Arrays.asList(Files.readString(curList.toPath()).split("\n")));
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            Collections.shuffle(songs);
+            try {
+                PrintWriter writer = new PrintWriter(curList);
+                writer.print("");
+                writer.close();
+                for (String song : songs) {
+                    File temp = new File(song);
+                    songsList.add(temp.getName().replace(".txt", ""));
+                    Files.write(curList.toPath(), song.getBytes(), StandardOpenOption.APPEND);
+                    Files.write(curList.toPath(), "\n".getBytes(), StandardOpenOption.APPEND);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+            ObservableList<String> observableList = FXCollections.observableList(songsList);
+            songsListView.setItems(observableList);
         });
     }
 
@@ -246,7 +284,6 @@ public class FXMLController implements Initializable {
                     stage.setTitle("Playlists");
                     stage.setScene(scene);
                     stage.showAndWait();
-                    Utils.refreshPlaylistsList(playlistsList);
                     ObservableList<String> observableList = FXCollections.observableList(playlistsList);
                     playlistsListView.setItems(observableList);
                 } catch (IOException e) {
@@ -254,9 +291,6 @@ public class FXMLController implements Initializable {
                 }
             }
         });
-    }
-
-    public void shareMedia() {
     }
 
     private void initPlaylistsListView() {
@@ -305,8 +339,7 @@ public class FXMLController implements Initializable {
                 if (mouseEvent.getClickCount() == 2) {
                     if (isPlaying) mediaPlayer.stop();
                     playSong();
-                    Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
-                } else if (mouseEvent.getClickCount() == 3) {
+                    Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration); } else if (mouseEvent.getClickCount() == 3) {
                     if (isPlaying) mediaPlayer.stop();
                     Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
                 }
@@ -337,14 +370,12 @@ public class FXMLController implements Initializable {
                     songNumber = curSongs.size() - 1;
                 }
                 playSong();
-                Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration);
-            } else {
+                Utils.refreshProgressBar(progressBar, media, mediaPlayer, timeLabel, timeDuration); } else {
                 progressBar.setValue(0);
                 mediaPlayer.seek(Duration.seconds(0));
                 mediaPlayer.play();
             }
         });
     }
+
 }
-
-
