@@ -126,6 +126,7 @@ public class Utils {
         curList.write(playlists);
         curList.close();
     }
+
     public static void createPlaylist(String name, String songToAdd) {
         File file = new File("musicData/playlists/" + name + ".txt");
         File playlistsList = new File("musicData/playlists.txt");
