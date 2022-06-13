@@ -7,8 +7,7 @@ import javafx.stage.Stage;
 
 import java.io.IOException;
 /**
- * Class MainApp prolong app.
- */
+ * Class MainApp prolong app.*/
 public class MainApp extends Application {
     @Override
     public void start(Stage stage) throws IOException {
