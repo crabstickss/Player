@@ -12,7 +12,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-
+/**
+ * Create class Utils for visualization of the interface on the screen.
+ */
 public class Utils {
     public static void refreshProgressBar(Slider progressBar, Media media, MediaPlayer mediaPlayer, Label timeLabel, Label timeDuration) {
         progressBar.setOnMousePressed(event -> mediaPlayer.seek(Duration.seconds(progressBar.getValue())));
@@ -29,6 +31,9 @@ public class Utils {
             timeDuration.setText(musicTime[1]);
         });
     }
+    /** Update current song.
+     * @param curSongs
+     */
     public static void refreshCurrentSongs(ArrayList<File> curSongs) {
         File curList = new File("musicData/currentList.txt");
         curSongs.clear();
@@ -43,6 +48,9 @@ public class Utils {
             curSongs.add(i, temp);
         }
     }
+    /** Update Playlists.
+     * @param playlistsList
+     */
     public static void refreshPlaylistsList(ArrayList<String> playlistsList) {
         File curPlaylistsList = new File("musicData/playlists.txt");
         String[] playlists;
@@ -57,6 +65,11 @@ public class Utils {
             playlistsList.add(i, temp);
         }
     }
+    /** Use to describe the form of a text representation.
+     * @param elapsed
+     * @param duration
+     * @return
+     */
     public static String formatTime(Duration elapsed, Duration duration) {
         int intElapsed = (int)Math.floor(elapsed.toSeconds());
         int elapsedMinutes = intElapsed / 60;
@@ -74,18 +87,27 @@ public class Utils {
                     elapsedSeconds);
         }
     }
+    /**
+     * Check application music-data-folder for multiple users.
+     */
     public static void musicDataFolderCheck() {
         File musicData = new File("musicData");
         if (!musicData.exists()) {
             musicData.mkdir();
         }
     }
+    /**
+     * Check application playlists-folder for multiple users.
+     */
     public static void playlistsFolderCheck() {
         File playlists = new File("musicData/playlists");
         if (!playlists.exists()) {
             playlists.mkdir();
         }
     }
+    /**
+     * Return a dynamical type of the specified list.
+     */
     public static void currentListCheck() {
         File file = new File("musicData/currentList.txt");
         if (!file.exists()) {
@@ -104,6 +126,9 @@ public class Utils {
             }
         }
     }
+    /**
+     * Return a dynamic type of the specified list.
+     */
     public static void playlistsListCheck() {
         File file = new File("musicData/playlists.txt");
         if (!file.exists()) {
@@ -114,6 +139,10 @@ public class Utils {
             }
         }
     }
+    /** Change the Playlist  to Current list.
+     * @param selectedItem
+     * @throws IOException
+     */
     public static void fromPlaylistToCurList(String selectedItem) throws IOException {
         File playlistsFile = new File("musicData/playlists/" + selectedItem + ".txt");
         FileWriter curList = new FileWriter("musicData/currentList.txt");
@@ -126,6 +155,10 @@ public class Utils {
         curList.write(playlists);
         curList.close();
     }
+    /** Create new Playlist.
+     * @param name
+     * @param songToAdd
+     */
     public static void createPlaylist(String name, String songToAdd) {
         File file = new File("musicData/playlists/" + name + ".txt");
         File playlistsList = new File("musicData/playlists.txt");
@@ -143,7 +176,7 @@ public class Utils {
             throw new RuntimeException(e);
         }
     }
-
+/** Add Close button*/
     public static void addToExistPlaylist(String name, String songToAdd) {
         File file = new File("musicData/playlists/" + name + ".txt");
         try {
