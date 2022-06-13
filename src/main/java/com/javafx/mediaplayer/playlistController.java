@@ -18,7 +18,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.ResourceBundle;
-
+/**
+ *  * Class PlaylistsController responsible for the part of the GUI that contains a list of playlists and buttons to manage them.
+ */
 public class playlistController implements Initializable {
     public Button addPlaylistOkButton;
     public TextField playlistTextField;
@@ -26,6 +28,9 @@ public class playlistController implements Initializable {
     public ListView<String> addPlaylistListView;
     public ArrayList<String> playlistsList;
     private boolean isPlaylistSelected = false;
+    /**
+     * Initializes UI elements.
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         playlistsList = new ArrayList<>();
@@ -33,9 +38,14 @@ public class playlistController implements Initializable {
         initPlaylistsListView();
         onSelectionPlaylistsView();
     }
+    /**
+     * Enter a Playlist name.
+     */
     public void enterPlaylistName() {
     }
-
+    /**
+     * Add the button "Ok" to the Pane.
+     */
     public void addPlaylistOk() {
         addPlaylistOkButton.setOnMouseClicked(mouseEvent -> {
             String songToAdd = FXMLController.curSongs.get(FXMLController.songNumber).toString();
@@ -54,7 +64,8 @@ public class playlistController implements Initializable {
             closePlaylists();
         });
     }
-
+    /** Crete a default Playlist.
+     */
     private void createDefaultPlaylist(String song) {
         File file = new File("musicData/playlists.txt");
         int number;
@@ -71,16 +82,24 @@ public class playlistController implements Initializable {
         }
         Utils.createPlaylist("Playlist #" + number, song);
     }
-
+    /**
+     * Add the button "Cancel" to the Pane.
+     */
     public void addPlaylistCancel() {
         addPlaylistCancelButton.setOnMouseClicked(mouseEvent -> {
             closePlaylists();
         });
     }
+    /**
+     * Initialize the view for casting processing.
+     */
     private void initPlaylistsListView() {
         ObservableList<String> observableList = FXCollections.observableList(playlistsList);
         addPlaylistListView.setItems(observableList);
     }
+    /**
+     * Find an Initialization the view for casting processing.
+     */
     private void onSelectionPlaylistsView() {
         addPlaylistListView.getSelectionModel().selectedItemProperty().addListener((observableValue, s, t1) -> {
             addPlaylistListView.setOnMouseClicked(mouseEvent -> {
@@ -100,6 +119,9 @@ public class playlistController implements Initializable {
             });
         });
     }
+    /**
+     * Finish all processes and close PlayList Pane.
+     */
     private void closePlaylists() {
         Stage stage = (Stage) addPlaylistCancelButton.getScene().getWindow();
         stage.close();
