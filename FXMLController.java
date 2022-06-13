@@ -62,13 +62,12 @@ public class FXMLController implements Initializable {
     /**
      * Handling the drag-and-drop event.
      */
-    @FXML
+
     private void handleDragOver(DragEvent event);
 
     /** Add track on pane with drag-and-drop event.
      * @param event
      */
-    @FXML
     private void handleDrop(DragEvent event) {
         List<File> files = event.getDragboard().getFiles();
         List<String> fileString = new ArrayList<>();
@@ -77,13 +76,11 @@ public class FXMLController implements Initializable {
     /**Add playlist on pane with drag-and-drop event.
      * @param event
      */
-    @FXML
     private void handleDragOverPlaylists(DragEvent event);
 
     /** Drag events replace mouse events during drag-and-drop gesture.
      * @param event
      */
-    @FXML
     private void handleDropPlaylists(DragEvent event) {
         List<File> files = event.getDragboard().getFiles();
             playlists.add(file.getName().replace(".txt", ""));
