@@ -21,10 +21,7 @@ import javafx.scene.media.MediaPlayer;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.net.URL;
 import java.nio.file.Files;
 import static java.nio.file.StandardCopyOption.*;
@@ -284,6 +281,10 @@ public class FXMLController implements Initializable {
                     stage.setTitle("Playlists");
                     stage.setScene(scene);
                     stage.showAndWait();
+                    File ppp = new File("musicData/playlists.txt");
+                    List<String> playlists = Arrays.asList(Files.readString(ppp.toPath()).split("\n"));
+                    playlistsList.clear();
+                    playlistsList.addAll(playlists);
                     ObservableList<String> observableList = FXCollections.observableList(playlistsList);
                     playlistsListView.setItems(observableList);
                 } catch (IOException e) {
