@@ -1,10 +1,9 @@
-package com.javafx.mediaplayer;
+package com.javafx.mediaplayer.controllers;
 
 
+import com.javafx.mediaplayer.Utils.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -14,7 +13,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Slider;
 import javafx.scene.input.DragEvent;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;

@@ -1,8 +1,8 @@
-package com.javafx.mediaplayer;
+package com.javafx.mediaplayer.controllers;
 
+import com.javafx.mediaplayer.Utils.Utils;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -10,13 +10,11 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 import java.io.File;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.ResourceBundle;
 
 public class playlistController implements Initializable {

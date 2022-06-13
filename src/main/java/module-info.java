@@ -9,4 +9,8 @@ module mediaplayer {
     exports com.javafx.mediaplayer;
     exports com.javafx.tests;
     opens com.javafx.tests to javafx.fxml;
+    exports com.javafx.mediaplayer.controllers;
+    opens com.javafx.mediaplayer.controllers to javafx.fxml;
+    exports com.javafx.mediaplayer.Utils;
+    opens com.javafx.mediaplayer.Utils to javafx.fxml;
 }

@@ -1,12 +1,9 @@
 package com.javafx.tests;
 
-import com.javafx.mediaplayer.Utils;
+import com.javafx.mediaplayer.Utils.Utils;
 import javafx.util.Duration;
 import org.junit.Assert;
 import org.junit.Test;
-
-import java.io.File;
-import java.io.IOException;
 
 public class UtilsTest {
     public UtilsTest() {

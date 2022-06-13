@@ -14,7 +14,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 
 /**
- * Create class Utils for visualization of the interface on the screen.
+ * Create class Utils for visualization of the interface on the screen/
  */
 public class Utils {
     public static void refreshProgressBar(Slider progressBar, Media media, MediaPlayer mediaPlayer, Label timeLabel, Label timeDuration) {

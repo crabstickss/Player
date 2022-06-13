@@ -7,7 +7,7 @@
 <?import javafx.scene.text.*?>
 <?import org.kordamp.ikonli.javafx.*?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="757.0" style="-fx-background-color: #171414;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.mediaplayer.FXMLController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="480.0" prefWidth="757.0" style="-fx-background-color: #171414;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.mediaplayer.controllers.FXMLController">
    <AnchorPane layoutY="394.0" prefHeight="86.0" prefWidth="757.0" style="-fx-background-color: #332c54;">
       <effect>
          <ColorAdjust />

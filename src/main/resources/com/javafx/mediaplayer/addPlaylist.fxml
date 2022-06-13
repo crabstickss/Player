@@ -3,7 +3,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane prefHeight="300.0" prefWidth="200.0" style="-fx-background-color: #332c54;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.mediaplayer.playlistController">
+<AnchorPane prefHeight="300.0" prefWidth="200.0" style="-fx-background-color: #332c54;" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.javafx.mediaplayer.controllers.playlistController">
    <children>
       <TextField fx:id="playlistTextField" layoutX="20.0" layoutY="220.0" onAction="#enterPlaylistName" promptText="Enter playlist's name..." />
       <Button fx:id="addPlaylistOkButton" layoutX="20.0" layoutY="267.0" mnemonicParsing="false" onAction="#addPlaylistOk" style="-fx-background-color: white; -fx-background-radius: 50;" text="OK" textAlignment="CENTER" />
